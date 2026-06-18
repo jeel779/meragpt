@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js"
-import { User } from "../models/user.model.js"
+import { prisma } from "../lib/prisma.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
@@ -13,18 +13,28 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
     if (!success) {
         throw new ApiError(400,"Invalid user data")
     }
-    const existedUser = await User.findOne({ $or: [{ username }, { email }] })
+    const existedUser = await prisma.user.findFirst({
+        where:{
+            OR:[ { username }, { email }]
+        }
+    })
     if (existedUser) {
         return res.status(401).json({ message: "user already exist with this email or username " })
     }
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds)
-    const user = await User.create({
-        username,
-        email,
-        password: hashedPassword
+    const createdUser = await prisma.user.create({
+        data:{
+            username,
+            email,
+            password: hashedPassword
+        },
+        select:{
+            id:true,
+            username:true,
+            email:true,
+        }
     })
-    const createdUser = await User.findById(user._id).select("-password")
     return res.status(200).json(new ApiResponse(200, createdUser, "user created successfully"))
 
 })
@@ -38,7 +48,11 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
         throw new ApiError(400, "email is required")
     }
 
-    const user = await User.findOne({ email })
+    const user = await prisma.user.findUnique({
+        where:{
+            email
+        }
+    })
     if (!user) {
         throw new ApiError(404, "User does not exist")
     }
@@ -49,12 +63,21 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
         throw new ApiError(401, "Invalid user credentials")
     }
 
-    const loggedInUser = await User.findById(user._id).select("-password ")
+    const loggedInUser = await prisma.user.findFirst({
+        where:{
+            id:user.id
+        },
+        select:{
+            id:true,
+            email:true,
+            username:true
+        }
+    })
     if (!loggedInUser) {
         throw new ApiError(404, "User not found");
     }
     const payload = {
-        _id: loggedInUser._id
+        id: loggedInUser.id
     }
     const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: "15d",
@@ -82,7 +105,16 @@ export const checkAuth = asyncHandler(async (req: Request, res: Response) => {
     if (!userId) {
         throw new ApiError(401, "Unauthorized");
     }
-    const user = await User.findById(userId).select("-password")
+    const user = await prisma.user.findFirst({
+        where:{
+            id:Number(userId)
+        },
+        select:{
+            id:true,
+            email:true,
+            username:true
+        }
+    })
     if (!user) {
         throw new ApiError(401, "User not found");
     }

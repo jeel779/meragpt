@@ -2,13 +2,16 @@ import {  GoogleGenAI } from "@google/genai";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { User } from "../models/user.model.js";
-import { Chat } from "../models/chat.model.js";
+import { prisma } from "../lib/prisma.js";
 import type { Request, Response } from "express";
 import { chatSchema } from "../utils/schemas.js";
 export const newChat = asyncHandler(async (req:Request, res:Response) => {
   const userId = req.userId
-  const user = await User.findById(userId)
+  const user = await prisma.user.findFirst({
+    where:{
+      id:Number(userId)
+    }
+  })
   if (!user) {
     throw new ApiError(404, "User does not exist")
   }
@@ -29,12 +32,13 @@ export const newChat = asyncHandler(async (req:Request, res:Response) => {
   if (!text) {
     throw new ApiError(500, "Failed to generate chat response");
   }
-  const chat=await Chat.create({
-    content:question,
-    response:text
+  const chat=await prisma.chat.create({ 
+    data:{
+      content:question,
+      response:text,
+      userId:user.id
+    }
   })
-  user.chatHistory.push(chat._id)
-  await user.save() 
 
   return res.status(200).json(new ApiResponse(200,chat,"chat response generated"));
 });
@@ -42,21 +46,36 @@ export const newChat = asyncHandler(async (req:Request, res:Response) => {
 export const deleteChatHistory = asyncHandler(async (req:Request, res:Response) => {
 
   const userId = req.userId
-  const user = await User.findById(userId)
+  const user = await prisma.user.findFirst({
+    where:{
+      id:Number(userId)
+    }
+  })
   if (!user) {
     throw new ApiError(404, "User does not exist")
   }
-  user.chatHistory = []
-  await user.save({ validateBeforeSave: false });
-
+  await prisma.chat.deleteMany({
+    where:{
+      userId:user.id
+    }
+  })
   return res.status(200).json(new ApiResponse(200, null, "chat history successfully deleted"));
 });
 
 export const listAllChats = asyncHandler(async (req:Request, res:Response) => {
   const userId = req.userId
-  const user = await User.findById(userId)
+  const user = await prisma.user.findFirst({
+    where:{
+      id:Number(userId)
+    }
+  })
   if (!user) {
     throw new ApiError(404, "User does not exist")
   }
-  return res.status(200).json(new ApiResponse(200,user.chatHistory,"chat history given"))
+  const chats=await prisma.chat.findMany({
+    where:{
+      userId:user.id
+    }
+  })
+  return res.status(200).json(new ApiResponse(200,chats,"chat history given"))
 })
