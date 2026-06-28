@@ -23,9 +23,13 @@ model User {
 
 model Chat {
   id        Int      @id @default(autoincrement())
+  role     Role
   content  String   // Content/Question from user
-  response    String   // Response from AI
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   createdAt DateTime @default(now())
+}
+enum Role{
+  user
+  assistant
 }

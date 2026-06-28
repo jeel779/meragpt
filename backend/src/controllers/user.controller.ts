@@ -5,17 +5,21 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import type { Request, Response } from "express";
-import { userSchema } from "../utils/schemas.js";
+import { signInSchema, signUpSchema } from "../utils/schemas.js";
 
 export const registerUser = asyncHandler(async (req: Request, res: Response) => {
     const { email, username, password } = req.body
-    const { success } = userSchema.safeParse({ email, username, password })
-    if (!success) {
-        throw new ApiError(400,"Invalid user data")
+    const result = signUpSchema.safeParse(req.body);
+
+    if (!result.success) {
+        throw new ApiError(
+            400,
+            result.error.issues[0]?.message || "Invalid user data"
+        );
     }
     const existedUser = await prisma.user.findFirst({
-        where:{
-            OR:[ { username }, { email }]
+        where: {
+            OR: [{ username }, { email }]
         }
     })
     if (existedUser) {
@@ -24,32 +28,55 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds)
     const createdUser = await prisma.user.create({
-        data:{
+        data: {
             username,
             email,
             password: hashedPassword
         },
-        select:{
-            id:true,
-            username:true,
-            email:true,
+        select: {
+            id: true,
+            username: true,
+            email: true,
         }
     })
-    return res.status(200).json(new ApiResponse(200, createdUser, "user created successfully"))
+    const payload = {
+        id: createdUser.id
+    }
+    const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+        expiresIn: "15d",
+    });
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" as const
+    }
+    return res
+        .status(200)
+        .cookie("token", token, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: createdUser,
+                    token,
+                },
+                "user created successfully"
+            )
+        )
 
 })
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body
-    const { success } = userSchema.safeParse({ email, password, username: "dummy" })
-    if (!success) {
-        throw new ApiError(400, "Invalid user data")
-    }
-    if (!email) {
-        throw new ApiError(400, "email is required")
-    }
+    const result = signInSchema.safeParse(req.body);
 
+    if (!result.success) {
+        throw new ApiError(
+            400,
+            result.error.issues[0]?.message || "Invalid user data"
+        );
+    }
     const user = await prisma.user.findUnique({
-        where:{
+        where: {
             email
         }
     })
@@ -64,13 +91,13 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     }
 
     const loggedInUser = await prisma.user.findFirst({
-        where:{
-            id:user.id
+        where: {
+            id: user.id
         },
-        select:{
-            id:true,
-            email:true,
-            username:true
+        select: {
+            id: true,
+            email: true,
+            username: true
         }
     })
     if (!loggedInUser) {
@@ -84,7 +111,8 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     });
     const options = {
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" as const
     }
 
     return res
@@ -106,13 +134,13 @@ export const checkAuth = asyncHandler(async (req: Request, res: Response) => {
         throw new ApiError(401, "Unauthorized");
     }
     const user = await prisma.user.findFirst({
-        where:{
-            id:Number(userId)
+        where: {
+            id: Number(userId)
         },
-        select:{
-            id:true,
-            email:true,
-            username:true
+        select: {
+            id: true,
+            email: true,
+            username: true
         }
     })
     if (!user) {
@@ -134,7 +162,8 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" as const
     }
 
     return res

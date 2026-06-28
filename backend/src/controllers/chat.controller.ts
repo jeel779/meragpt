@@ -16,17 +16,24 @@ export const newChat = asyncHandler(async (req:Request, res:Response) => {
     throw new ApiError(404, "User does not exist")
   }
 
-  const question = req.body?.content;
+  const question = req.body?.message;
   const { success } = chatSchema.safeParse({ content: question })
   if (!success) {
     throw new ApiError(400, "Invalid chat data")
   }
+  const userChat=await prisma.chat.create({
+    data:{
+      content:question,
+      role:"user",
+      userId:user.id
+    }
+  })
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string});
 
   const response = await ai.models.generateContent({
-    model:  "gemini-3-flash-preview",
+    model: "gemini-2.5-flash",
     contents: question,
-  }) ;
+  });
   const text = response.text;
  
   if (!text) {
@@ -34,8 +41,8 @@ export const newChat = asyncHandler(async (req:Request, res:Response) => {
   }
   const chat=await prisma.chat.create({ 
     data:{
-      content:question,
-      response:text,
+      content:text,
+      role:"assistant",
       userId:user.id
     }
   })

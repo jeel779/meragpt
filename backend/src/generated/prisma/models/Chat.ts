@@ -38,24 +38,24 @@ export type ChatSumAggregateOutputType = {
 
 export type ChatMinAggregateOutputType = {
   id: number | null
+  role: $Enums.Role | null
   content: string | null
-  response: string | null
   userId: number | null
   createdAt: Date | null
 }
 
 export type ChatMaxAggregateOutputType = {
   id: number | null
+  role: $Enums.Role | null
   content: string | null
-  response: string | null
   userId: number | null
   createdAt: Date | null
 }
 
 export type ChatCountAggregateOutputType = {
   id: number
+  role: number
   content: number
-  response: number
   userId: number
   createdAt: number
   _all: number
@@ -74,24 +74,24 @@ export type ChatSumAggregateInputType = {
 
 export type ChatMinAggregateInputType = {
   id?: true
+  role?: true
   content?: true
-  response?: true
   userId?: true
   createdAt?: true
 }
 
 export type ChatMaxAggregateInputType = {
   id?: true
+  role?: true
   content?: true
-  response?: true
   userId?: true
   createdAt?: true
 }
 
 export type ChatCountAggregateInputType = {
   id?: true
+  role?: true
   content?: true
-  response?: true
   userId?: true
   createdAt?: true
   _all?: true
@@ -185,8 +185,8 @@ export type ChatGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type ChatGroupByOutputType = {
   id: number
+  role: $Enums.Role
   content: string
-  response: string
   userId: number
   createdAt: Date
   _count: ChatCountAggregateOutputType | null
@@ -216,8 +216,8 @@ export type ChatWhereInput = {
   OR?: Prisma.ChatWhereInput[]
   NOT?: Prisma.ChatWhereInput | Prisma.ChatWhereInput[]
   id?: Prisma.IntFilter<"Chat"> | number
+  role?: Prisma.EnumRoleFilter<"Chat"> | $Enums.Role
   content?: Prisma.StringFilter<"Chat"> | string
-  response?: Prisma.StringFilter<"Chat"> | string
   userId?: Prisma.IntFilter<"Chat"> | number
   createdAt?: Prisma.DateTimeFilter<"Chat"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -225,8 +225,8 @@ export type ChatWhereInput = {
 
 export type ChatOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  response?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -237,8 +237,8 @@ export type ChatWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ChatWhereInput | Prisma.ChatWhereInput[]
   OR?: Prisma.ChatWhereInput[]
   NOT?: Prisma.ChatWhereInput | Prisma.ChatWhereInput[]
+  role?: Prisma.EnumRoleFilter<"Chat"> | $Enums.Role
   content?: Prisma.StringFilter<"Chat"> | string
-  response?: Prisma.StringFilter<"Chat"> | string
   userId?: Prisma.IntFilter<"Chat"> | number
   createdAt?: Prisma.DateTimeFilter<"Chat"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -246,8 +246,8 @@ export type ChatWhereUniqueInput = Prisma.AtLeast<{
 
 export type ChatOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  response?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ChatCountOrderByAggregateInput
@@ -262,60 +262,60 @@ export type ChatScalarWhereWithAggregatesInput = {
   OR?: Prisma.ChatScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ChatScalarWhereWithAggregatesInput | Prisma.ChatScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Chat"> | number
+  role?: Prisma.EnumRoleWithAggregatesFilter<"Chat"> | $Enums.Role
   content?: Prisma.StringWithAggregatesFilter<"Chat"> | string
-  response?: Prisma.StringWithAggregatesFilter<"Chat"> | string
   userId?: Prisma.IntWithAggregatesFilter<"Chat"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Chat"> | Date | string
 }
 
 export type ChatCreateInput = {
+  role: $Enums.Role
   content: string
-  response: string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutChatsInput
 }
 
 export type ChatUncheckedCreateInput = {
   id?: number
+  role: $Enums.Role
   content: string
-  response: string
   userId: number
   createdAt?: Date | string
 }
 
 export type ChatUpdateInput = {
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  response?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutChatsNestedInput
 }
 
 export type ChatUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  response?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ChatCreateManyInput = {
   id?: number
+  role: $Enums.Role
   content: string
-  response: string
   userId: number
   createdAt?: Date | string
 }
 
 export type ChatUpdateManyMutationInput = {
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  response?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ChatUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  response?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -332,8 +332,8 @@ export type ChatOrderByRelationAggregateInput = {
 
 export type ChatCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  response?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -345,16 +345,16 @@ export type ChatAvgOrderByAggregateInput = {
 
 export type ChatMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  response?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type ChatMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  role?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  response?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -406,16 +406,20 @@ export type ChatUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.ChatScalarWhereInput | Prisma.ChatScalarWhereInput[]
 }
 
+export type EnumRoleFieldUpdateOperationsInput = {
+  set?: $Enums.Role
+}
+
 export type ChatCreateWithoutUserInput = {
+  role: $Enums.Role
   content: string
-  response: string
   createdAt?: Date | string
 }
 
 export type ChatUncheckedCreateWithoutUserInput = {
   id?: number
+  role: $Enums.Role
   content: string
-  response: string
   createdAt?: Date | string
 }
 
@@ -450,36 +454,36 @@ export type ChatScalarWhereInput = {
   OR?: Prisma.ChatScalarWhereInput[]
   NOT?: Prisma.ChatScalarWhereInput | Prisma.ChatScalarWhereInput[]
   id?: Prisma.IntFilter<"Chat"> | number
+  role?: Prisma.EnumRoleFilter<"Chat"> | $Enums.Role
   content?: Prisma.StringFilter<"Chat"> | string
-  response?: Prisma.StringFilter<"Chat"> | string
   userId?: Prisma.IntFilter<"Chat"> | number
   createdAt?: Prisma.DateTimeFilter<"Chat"> | Date | string
 }
 
 export type ChatCreateManyUserInput = {
   id?: number
+  role: $Enums.Role
   content: string
-  response: string
   createdAt?: Date | string
 }
 
 export type ChatUpdateWithoutUserInput = {
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  response?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ChatUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  response?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ChatUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  response?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -487,8 +491,8 @@ export type ChatUncheckedUpdateManyWithoutUserInput = {
 
 export type ChatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  role?: boolean
   content?: boolean
-  response?: boolean
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -496,8 +500,8 @@ export type ChatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 
 export type ChatSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  role?: boolean
   content?: boolean
-  response?: boolean
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -505,8 +509,8 @@ export type ChatSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 
 export type ChatSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  role?: boolean
   content?: boolean
-  response?: boolean
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -514,13 +518,13 @@ export type ChatSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 
 export type ChatSelectScalar = {
   id?: boolean
+  role?: boolean
   content?: boolean
-  response?: boolean
   userId?: boolean
   createdAt?: boolean
 }
 
-export type ChatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "response" | "userId" | "createdAt", ExtArgs["result"]["chat"]>
+export type ChatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "role" | "content" | "userId" | "createdAt", ExtArgs["result"]["chat"]>
 export type ChatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -538,8 +542,8 @@ export type $ChatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
+    role: $Enums.Role
     content: string
-    response: string
     userId: number
     createdAt: Date
   }, ExtArgs["result"]["chat"]>
@@ -967,8 +971,8 @@ export interface Prisma__ChatClient<T, Null = never, ExtArgs extends runtime.Typ
  */
 export interface ChatFieldRefs {
   readonly id: Prisma.FieldRef<"Chat", 'Int'>
+  readonly role: Prisma.FieldRef<"Chat", 'Role'>
   readonly content: Prisma.FieldRef<"Chat", 'String'>
-  readonly response: Prisma.FieldRef<"Chat", 'String'>
   readonly userId: Prisma.FieldRef<"Chat", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Chat", 'DateTime'>
 }
