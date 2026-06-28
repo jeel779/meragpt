@@ -31,7 +31,7 @@ export const newChat = asyncHandler(async (req:Request, res:Response) => {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string});
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
+    model: "gemini-3.1-flash-lite",
     contents: question,
   });
   const text = response.text;
